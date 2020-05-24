@@ -18,3 +18,4 @@ Use `npm run dev` in root folder to start project
 GraphQl playground - `http://localhost:4000/`
 
 FrontEnd - `http://localhost:8080/`
+
