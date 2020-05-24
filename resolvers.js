@@ -5,6 +5,19 @@ module.exports = {
         path: 'createdBy',
         model: 'User'
       })
+      return [
+        {
+          title: 'cat 1',
+          description: 'description',
+          imageUrl: 'https://cdn2.thecatapi.com/images/cs1.jpg',
+          createdBy: 'createdBy'
+        },
+        {
+          title: 'cat 2',
+          description: 'description 2',
+          imageUrl: 'https://cdn2.thecatapi.com/images/cs4.jpg',
+          createdBy: 'createdBy2'
+        }]
       return posts
     }
   },
