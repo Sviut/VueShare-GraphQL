@@ -31,7 +31,7 @@ export const apolloClient = new ApolloClient({
     }
 
     if (graphQLErrors) {
-      console.error('[graphQLErrors]', graphQLErrors)
+      console.error('[graphQLErrors]', graphQLErrors[0].message)
     }
   }
 })
@@ -47,5 +47,8 @@ new Vue({
   store,
   vuetify,
   apolloProvider,
-  render: h => h(App)
+  render: h => h(App),
+  created() {
+    this.$store.dispatch('getCurrentUser')
+  }
 }).$mount('#app')

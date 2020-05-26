@@ -8,6 +8,16 @@ const createToken = (user, secret, expiresIn) => {
 
 module.exports = {
   Query: {
+    getCurrentUser: async (_, args, { User, currentUser }) => {
+      if (!currentUser) {
+        return null
+      }
+      const user = await User.findOne({ username: currentUser.username }).populate({
+        path: 'favorite',
+        model: 'Post'
+      })
+      return user
+    },
     getPosts: async (_, args, { Post }) => {
       const posts = await Post.find({}).sort({ createdDate: 'desc' }).populate({
         path: 'createdBy',
@@ -44,7 +54,7 @@ module.exports = {
       if (!isValidPassword) {
         throw new Error('Invalid password')
       }
-      return { token: createToken(user, process.env.SECRET, '1hr')}
+      return { token: createToken(user, process.env.SECRET, '1hr') }
     },
     signUpUser: async (_, { username, email, password }, { User }) => {
       const user = await User.findOne({ username })
@@ -56,7 +66,7 @@ module.exports = {
         email,
         password
       }).save()
-      return { token: createToken(newUser, process.env.SECRET, '1hr')}
+      return { token: createToken(newUser, process.env.SECRET, '1hr') }
     }
   }
 }

@@ -1,6 +1,7 @@
 directive @unique on FIELD_DEFINITION
 
 type Query {
+    getCurrentUser: User
     getPosts: [Post]
 }
 
