@@ -1,3 +1,5 @@
+const bcrypt = require('bcrypt')
+
 module.exports = {
   Query: {
     getPosts: async (_, args, { Post }) => {
@@ -23,12 +25,23 @@ module.exports = {
   },
   Mutation: {
     addPost: async (_, { title, imageUrl, categories, description, creatorId }, { Post }) => {
-      return  newPost = await new Post({
+      return newPost = await new Post({
         title, imageUrl, categories, description, createdBy: creatorId
       }).save()
       return newPost
     },
-    signupUser: async (_, { username, email, password }, { User }) => {
+    signInUser: async (_, { username, password }, { User }) => {
+      const user = await User.findOne({ username })
+      if (!user) {
+        throw new Error('User not found')
+      }
+      const isValidPassword = await bcrypt.compare(password, user.password)
+      if (!isValidPassword) {
+        throw new Error('Invalide password')
+      }
+      return user
+    },
+    signUpUser: async (_, { username, email, password }, { User }) => {
       const user = await User.findOne({ username })
       if (user) {
         throw new Error('User already exists')
