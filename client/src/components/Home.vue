@@ -1,7 +1,11 @@
 <template>
-  <v-container>
-    <v-flex xs12>
-      <v-carousel hide-delimiters v-if="posts" cycle interval="3000">
+  <v-container fill-height>
+    <v-layout v-if="loading && !posts.length" row align-center justify-center>
+      <v-progress-circular indeterminate :size="70" :width="7"></v-progress-circular>
+    </v-layout>
+    
+    <v-flex v-else xs12>
+      <v-carousel hide-delimiters cycle interval="3000">
         <v-carousel-item v-for="post in posts" :key="post.title" :src="post.imageUrl">
           <h1 class="carousel__title">{{post.title}}</h1>
         </v-carousel-item>
@@ -11,8 +15,6 @@
 </template>
 
 <script>
-  import {gql} from 'apollo-boost'
-
   export default {
     name: 'Home',
     created() {
@@ -21,6 +23,9 @@
     computed: {
       posts() {
         return this.$store.getters.posts
+      },
+      loading() {
+        return this.$store.getters.loading
       }
     },
     methods: {
@@ -40,7 +45,7 @@
     border-radius: 5px 5px 0 0;
     padding: 0.5rem;
     margin: 0 auto;
-    bottom: 0px;
+    bottom: 0;
     left: 0;
     right: 0;
   }

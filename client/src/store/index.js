@@ -39,10 +39,14 @@ export default new Vuex.Store({
       .catch(err => {
         console.error(err)
       })
+      .finally(() => {
+        commit("setLoading", false)
+      })
     }
   },
   getters: {
-    posts: state => state.posts
+    posts: state => state.posts,
+    loading: state => state.loading
   },
   modules: {}
 })
