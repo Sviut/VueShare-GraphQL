@@ -10,7 +10,30 @@ import VueApollo from 'vue-apollo'
 Vue.use(VueApollo)
 
 export const apolloClient = new ApolloClient({
-  uri: 'http://localhost:4000/graphql'
+  uri: 'http://localhost:4000/graphql',
+  fetchOptions: {
+    credentials: 'include'
+  },
+  request: operation => {
+    if(!localStorage.token) {
+      localStorage.setItem('token', '')
+    }
+
+    operation.setContext({
+      headers: {
+        authorization: localStorage.getItem('token')
+      }
+    })
+  },
+  onError({graphQLErrors, networkError}) {
+    if (networkError) {
+      console.error('[networkError]', networkError)
+    }
+
+    if (graphQLErrors) {
+      console.error('[graphQLErrors]', graphQLErrors)
+    }
+  }
 })
 
 const apolloProvider = new VueApollo({
