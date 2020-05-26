@@ -4,6 +4,10 @@ type Query {
     getPosts: [Post]
 }
 
+type Token {
+    token: String!
+}
+
 type User {
     _id: ID
     username: String! @unique
@@ -35,6 +39,6 @@ type Message{
 
 type Mutation {
     addPost(title: String!, imageUrl: String!, categories: [String]!, description: String!, creatorId: ID!): Post!
-    signUpUser(username: String!, email: String!, password: String!): User!
-    signInUser(username: String!, password: String!): User!
+    signUpUser(username: String!, email: String!, password: String!): Token
+    signInUser(username: String!, password: String!): Token
 }

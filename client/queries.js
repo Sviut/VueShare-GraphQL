@@ -8,3 +8,19 @@ export const GET_POSTS = gql`
         }
     }
 `
+
+export const SIGNIN_USER = gql`
+    mutation($username: String!, $password: String!) {
+        signInUser(username: $username, password: $password) {
+            token
+        }
+    }
+`
+
+export const SIGNUP_USER = gql`
+    mutation($username: String!, $password: String!, $email: String!) {
+        signUpUser(username: $username, password: $password, email: $email) {
+            token
+        }
+    }
+`

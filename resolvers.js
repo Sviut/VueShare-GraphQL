@@ -1,4 +1,10 @@
 const bcrypt = require('bcrypt')
+const jwt = require('jsonwebtoken')
+
+const createToken = (user, secret, expiresIn) => {
+  const { username, email } = user
+  return jwt.sign({ username, email }, secret, { expiresIn })
+}
 
 module.exports = {
   Query: {
@@ -25,10 +31,9 @@ module.exports = {
   },
   Mutation: {
     addPost: async (_, { title, imageUrl, categories, description, creatorId }, { Post }) => {
-      return newPost = await new Post({
+      return await new Post({
         title, imageUrl, categories, description, createdBy: creatorId
       }).save()
-      return newPost
     },
     signInUser: async (_, { username, password }, { User }) => {
       const user = await User.findOne({ username })
@@ -37,9 +42,9 @@ module.exports = {
       }
       const isValidPassword = await bcrypt.compare(password, user.password)
       if (!isValidPassword) {
-        throw new Error('Invalide password')
+        throw new Error('Invalid password')
       }
-      return user
+      return { token: createToken(user, process.env.SECRET, '1hr')}
     },
     signUpUser: async (_, { username, email, password }, { User }) => {
       const user = await User.findOne({ username })
@@ -51,7 +56,7 @@ module.exports = {
         email,
         password
       }).save()
-      return newUser
+      return { token: createToken(newUser, process.env.SECRET, '1hr')}
     }
   }
 }
