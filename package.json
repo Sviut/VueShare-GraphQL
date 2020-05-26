@@ -17,6 +17,7 @@
     "dotenv": "^8.2.0",
     "graphql": "^15.0.0",
     "jsonwebtoken": "^8.5.1",
+    "killport": "^1.0.1",
     "md5": "^2.2.1",
     "mongoose": "^5.9.15",
     "nodemon": "^2.0.4"
