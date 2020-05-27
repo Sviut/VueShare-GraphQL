@@ -53,6 +53,7 @@
     watch: {
       user(value) {
         if (value) {
+          console.log(value)
           this.$router.push('/')
         }
       }
