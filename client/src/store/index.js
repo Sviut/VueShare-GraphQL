@@ -1,8 +1,6 @@
 import Vue from 'vue'
 import Vuex from 'vuex'
 
-import router from '../router'
-
 import { apolloClient } from '../main'
 import { GET_CURRENT_USER, GET_POSTS, SIGNIN_USER } from '../../queries'
 
@@ -23,7 +21,8 @@ export default new Vuex.Store({
     },
     setLoading: (state, payload) => {
       state.loading = payload
-    }
+    },
+    clearUser: state => (state.user = null)
   },
   actions: {
     getCurrentUser: ({ commit }) => {
@@ -70,6 +69,11 @@ export default new Vuex.Store({
         .catch(err => {
           console.error(err)
         })
+    },
+    logout: async ({ commit }) => {
+      commit('clearUser')
+      localStorage.setItem('token', '')
+      await apolloClient.resetStore()
     }
   },
   getters: {
