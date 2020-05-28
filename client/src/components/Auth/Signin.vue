@@ -6,6 +6,12 @@
       </v-flex>
     </v-layout>
 
+    <v-layout row wrap v-if="error">
+      <v-flex x12 sm6 offset-sm3>
+        <form-alert :message="error.message"></form-alert>
+      </v-flex>
+    </v-layout>
+
     <v-row row wrap>
       <v-flex xs12 sm6 offset-sm3>
         <v-card color="secondary" dark>
@@ -48,12 +54,11 @@
       }
     },
     computed: {
-      ...mapGetters(['user'])
+      ...mapGetters(['user', 'error'])
     },
     watch: {
       user(value) {
         if (value) {
-          console.log(value)
           this.$router.push('/')
         }
       }

@@ -7,7 +7,10 @@ import vuetify from './plugins/vuetify'
 import ApolloClient from 'apollo-boost'
 import VueApollo from 'vue-apollo'
 
-Vue.use(VueApollo)
+import FormAlert from './components/Shared/FormAlert'
+
+
+Vue.use(VueApollo).component('form-alert', FormAlert)
 
 export const apolloClient = new ApolloClient({
   uri: 'http://localhost:4000/graphql',
