@@ -9,7 +9,6 @@ import VueApollo from 'vue-apollo'
 
 import FormAlert from './components/Shared/FormAlert'
 
-
 Vue.use(VueApollo).component('form-alert', FormAlert)
 
 export const apolloClient = new ApolloClient({
@@ -18,7 +17,7 @@ export const apolloClient = new ApolloClient({
     credentials: 'include'
   },
   request: operation => {
-    if(!localStorage.token) {
+    if (!localStorage.token) {
       localStorage.setItem('token', '')
     }
 
@@ -28,13 +27,19 @@ export const apolloClient = new ApolloClient({
       }
     })
   },
-  onError({graphQLErrors, networkError}) {
+  onError({ graphQLErrors, networkError }) {
     if (networkError) {
       console.error('[networkError]', networkError)
     }
 
     if (graphQLErrors) {
-      console.error('[graphQLErrors]', graphQLErrors[0].message)
+      for (let error of graphQLErrors) {
+        console.error('[graphQLErrors]', error.message)
+        if (error.name === 'AuthenticationError') {
+          store.commit('setAuthError', error)
+          store.dispatch('signOutUser')
+        }
+      }
     }
   }
 })
