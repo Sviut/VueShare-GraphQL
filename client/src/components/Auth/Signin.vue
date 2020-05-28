@@ -14,7 +14,7 @@
 
     <v-row row wrap>
       <v-flex xs12 sm6 offset-sm3>
-        <v-card color="secondary" dark>
+        <v-card color="primary" dark>
           <v-form v-model="isFormValid" lazy-validation ref="form" @submit.prevent="handleSignInMethod">
             <v-container>
               <v-col>
@@ -30,8 +30,8 @@
               <v-col>
                 <v-layout column align-center>
                   <v-btn :disabled="!isFormValid" class="mb-2" color="accent" type="submit">Signin</v-btn>
-                  <h3>Already have an account?
-                    <router-link to="/singup">Signup</router-link>
+                  <h3>Don't have an account?
+                    <router-link class="green--text" to="/signup">Signup</router-link>
                   </h3>
                 </v-layout>
               </v-col>
@@ -82,6 +82,17 @@
           })
         }
       }
+    }
+  }
+</script>
+
+<script>
+  import { mapGetters } from 'vuex'
+
+  export default {
+    name: 'Signin',
+    computed: {
+      ...mapGetters(['error'])
     }
   }
 </script>
