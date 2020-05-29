@@ -3,6 +3,7 @@ directive @unique on FIELD_DEFINITION
 type Query {
     getCurrentUser: User
     getPosts: [Post]
+    infiniteScrollPosts(pageNum: Int!, pageSize: Int!): PostPage
 }
 
 type Token {
@@ -17,6 +18,11 @@ type User {
     avatar: String
     joinDate: String
     favorites: [Post]
+}
+
+type PostPage {
+    posts: [Post]
+    hasMore: Boolean
 }
 
 type Post {
