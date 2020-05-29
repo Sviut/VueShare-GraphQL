@@ -6,7 +6,7 @@
 
         <v-flex v-else-if="posts.length" xs12>
             <v-carousel hide-delimiters cycle interval="3000">
-                <v-carousel-item v-for="post in posts" :key="post.title" :src="post.imageUrl">
+                <v-carousel-item v-for="post in posts" :key="post._id" :src="post.imageUrl">
                     <h1 class="carousel__title">{{post.title}}</h1>
                 </v-carousel-item>
             </v-carousel>

@@ -37,7 +37,7 @@ export const apolloClient = new ApolloClient({
         console.error('[graphQLErrors]', error.message)
         if (error.name === 'AuthenticationError') {
           store.commit('setAuthError', error)
-          store.dispatch('signOutUser')
+          // store.dispatch('signOutUser')
         }
       }
     }

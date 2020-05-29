@@ -10,7 +10,7 @@ const PostSchema = new mongoose.Schema({
     required: true
   },
   categories: {
-    type: String,
+    type: [String],
     required: true
   },
   description: {
@@ -25,7 +25,7 @@ const PostSchema = new mongoose.Schema({
     type: Number,
     default: 0
   },
-  createBy: {
+  createdBy: {
     type: mongoose.Schema.Types.ObjectId,
     required: true,
     ref: 'User'

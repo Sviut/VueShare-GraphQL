@@ -3,7 +3,7 @@ import Vuex from 'vuex'
 import router from '../router'
 
 import { apolloClient } from '../main'
-import { GET_CURRENT_USER, GET_POSTS, SIGNIN_USER, SIGNUP_USER } from '../../queries'
+import { ADD_POST, GET_CURRENT_USER, GET_POSTS, SIGNIN_USER, SIGNUP_USER } from '../../queries'
 
 Vue.use(Vuex)
 
@@ -35,6 +35,35 @@ export default new Vuex.Store({
     clearError: state => (state.error = null)
   },
   actions: {
+    addPost: ({ commit }, payload) => {
+      apolloClient
+        .mutate({
+          mutation: ADD_POST,
+          variables: payload,
+          update: (cache, { data: addPost }) => {
+            const data = cache.readQuery({ query: GET_POSTS })
+            data.getPosts.unshift(addPost)
+            cache.writeQuery({
+              query: GET_POSTS,
+              data
+            })
+          },
+          optimisticResponse: {
+            __typename: 'Mutation',
+            addPost: {
+              __typename: 'Post',
+              _id: -1,
+              ...payload
+            }
+          }
+        })
+        .then(({ data }) => {
+          console.log(data.addPost)
+        })
+        .catch(err => {
+          console.error(err)
+        })
+    },
     getCurrentUser: ({ commit }) => {
       commit('setLoading', true)
       apolloClient
@@ -83,7 +112,7 @@ export default new Vuex.Store({
     },
     signUpUser: ({ commit }, payload) => {
       commit('setError', null)
-      localStorage.setItem('token','')
+      localStorage.setItem('token', '')
       apolloClient
         .mutate({
           mutation: SIGNUP_USER,

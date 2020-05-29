@@ -86,17 +86,6 @@
   }
 </script>
 
-<script>
-  import { mapGetters } from 'vuex'
-
-  export default {
-    name: 'Signin',
-    computed: {
-      ...mapGetters(['error'])
-    }
-  }
-</script>
-
 <style scoped>
 
 </style>
