@@ -98,6 +98,32 @@ export const ADD_POST_MESSAGE = gql`
     }
 `
 
+export const LIKE_POST = gql`    
+    mutation ($postId: ID!, $userName: String!) {
+        likePost(postId: $postId, username: $userName) {
+            likes
+            favorites {
+                _id
+                title
+                imageUrl
+            }
+        }
+    }
+`
+
+export const UNLIKE_POST = gql`
+    mutation ($postId: ID!, $userName: String!) {
+        unLikePost(postId: $postId, username: $userName) {
+            likes
+            favorites {
+                _id
+                title
+                imageUrl
+            }
+        }
+    }
+`
+
 export const ADD_POST = gql`
     mutation ($title: String!,$imageUrl: String!,$categories: [String]!,$description: String!,$creatorId: ID!) {
         addPost(

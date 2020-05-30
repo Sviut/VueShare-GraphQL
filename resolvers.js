@@ -71,6 +71,42 @@ module.exports = {
       })
       return post.messages[0]
     },
+    likePost: async (_, { username, postId }, { Post, User }) => {
+      const post = await Post.findOneAndUpdate(
+        { _id: postId },
+        { $inc: { likes: 1 } },
+        { new: true }
+      )
+
+      const user = await User.findOneAndUpdate(
+        { username },
+        { $addToSet: { favorites: postId } },
+        { new: true }
+      ).populate({
+        path: 'favorite',
+        model: 'Post'
+      })
+
+      return { likes: post.likes, favorites: user.favorites}
+    },
+    unLikePost: async (_, { username, postId }, { Post, User }) => {
+      const post = await Post.findOneAndUpdate(
+        { _id: postId },
+        { $inc: { likes: -1 } },
+        { new: true }
+      )
+
+      const user = await User.findOneAndUpdate(
+        { username },
+        { $pull: { favorites: postId } },
+        { new: true }
+      ).populate({
+        path: 'favorite',
+        model: 'Post'
+      })
+
+      return { likes: post.likes, favorites: user.favorites}
+    },
     signInUser: async (_, { username, password }, { User }) => {
       const user = await User.findOne({ username })
       if (!user) {
