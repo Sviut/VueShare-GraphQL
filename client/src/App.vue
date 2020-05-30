@@ -49,10 +49,11 @@
           {{btn.title}}
         </v-btn>
 
-        <v-btn text to="/profile" v-if="user">
+        <v-btn text to="/profile" v-if="user" :class="{'bounce': badgeAnimated}">
           <v-icon class="hidden-sm-only" left>mdi-account-box</v-icon>
-          <v-badge color="red darken-2">
-            <!--            <span slot="badge">1</span>-->
+          <v-badge color="green">
+            <span v-if="userFavorites.length" slot="badge"
+                  >{{userFavorites.length}}</span>
             Profile
           </v-badge>
         </v-btn>
@@ -94,6 +95,7 @@
         sideNav: false,
         authSnackbar: false,
         authErrorSnackbar: true,
+        badgeAnimated: false
       }
     },
     watch: {
@@ -106,10 +108,16 @@
         if (value) {
           this.authErrorSnackbar = true
         }
+      },
+      userFavorites(value) {
+        if (value) {
+          this.badgeAnimated = true
+          setTimeout(() => (this.badgeAnimated = false), 1000)
+        }
       }
     },
     computed: {
-      ...mapGetters(['user','authError']),
+      ...mapGetters(['user', 'authError', 'userFavorites']),
       sideNavItems() {
         let items = [
           { icon: 'mdi-message-text', title: 'Posts', link: '/posts' },
@@ -164,5 +172,24 @@
   .fade-enter,
   .fade-leave-active {
     opacity: 0;
+  }
+
+  .bounce {
+    animation: bounce 1s both;
+  }
+
+  @keyframes bounce {
+    0%, 20%, 54%, 80%, 100% {
+      transform: translate3d(0, 0, 0);
+    }
+    40%, 43% {
+      transform: translate3d(0, -20px, 0);
+    }
+    70% {
+      transform: translate3d(0, -10px, 0);
+    }
+    90% {
+      transform: translate3d(0, -4px, 0);
+    }
   }
 </style>
