@@ -5,7 +5,7 @@
         <v-card hover>
           <v-card-title>
             <h1>{{getPost.title}}</h1>
-            <v-btn @click="handleLikePost" large icon v-if="user">
+            <v-btn @click="handleToggleLike" large icon v-if="user">
               <v-icon large color="grey">mdi-heart</v-icon>
             </v-btn>
             <h3 class="ml-3 font-weight-thin">{{getPost.likes}} LIKES</h3>
@@ -61,7 +61,7 @@
           <v-list subheader two-line>
             <v-subheader>Messages ({{getPost.messages.length}})</v-subheader>
 
-            <v-list-item v-for="message in getPost.messages">
+            <v-list-item v-for="message in getPost.messages" :key="message._id">
 
               <v-list-item-avatar>
                 <v-img :src="message.messageUser.avatar"></v-img>
@@ -92,7 +92,7 @@
 </template>
 
 <script>
-  import { ADD_POST_MESSAGE, GET_POST, LIKE_POST } from '../../../queries'
+  import { ADD_POST_MESSAGE, GET_POST, LIKE_POST, UNLIKE_POST } from '../../../queries'
   import { mapGetters } from 'vuex'
 
   export default {
@@ -106,7 +106,8 @@
         messageRules: [
           message => !!message || 'Message is required',
           message => message?.length < 50 || 'Message must be less than 50 characters'
-        ]
+        ],
+        postLiked: false
       }
     },
     apollo: {
@@ -186,6 +187,37 @@
           this.$store.commit('setUser', updatedUser)
         })
         .catch(err => console.log(err))
+      },
+      handleUnlikePost() {
+        const variables = {
+          postId: this.postId,
+          username: this.user.username
+        }
+
+        this.$apollo.mutate({
+          mutation: UNLIKE_POST,
+          variables,
+          update: (cache, { data: { likePost } }) => {
+            const data = cache.readQuery({
+              query: GET_POST,
+              variables: { postId: this.postId }
+            })
+            data.getPost.likes -= 1
+            cache.writeQuery({
+              query: GET_POST,
+              variables: { postId: this.postId },
+              data
+            })
+          }
+        })
+          .then(({data})=> {
+            const updatedUser = {...this.user, favorites: data.unlikePost.favorites}
+            this.$store.commit('setUser', updatedUser)
+          })
+          .catch(err => console.log(err))
+      },
+      handleToggleLike() {
+        this.postLiked ? this.handleLikePost() : this.handleUnlikePost()
       }
     }
   }

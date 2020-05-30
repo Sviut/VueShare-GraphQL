@@ -112,8 +112,8 @@ export const LIKE_POST = gql`
 `
 
 export const UNLIKE_POST = gql`
-    mutation ($postId: ID!, $userName: String!) {
-        unlikePost(postId: $postId, username: $userName) {
+    mutation ($postId: ID!, $username: String!) {
+        unlikePost(postId: $postId, username: $username) {
             likes
             favorites {
                 _id
