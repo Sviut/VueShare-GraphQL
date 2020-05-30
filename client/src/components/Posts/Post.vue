@@ -41,10 +41,11 @@
     <div class="mt-3">
       <v-layout class="mb-3" v-if="user">
         <v-flex xs12>
-          <v-form @submit.prevent="handleAddPostMessage">
+          <v-form v-model="isValidForm" lazy-validation ref="form" @submit.prevent="handleAddPostMessage">
             <v-layout row>
               <v-flex xs12>
                 <v-text-field
+                        :rules="messageRules"
                         @click:append-outer="handleAddPostMessage"
                         v-model="messageBody" clearable :append-outer-icon="messageBody && 'mdi-send'"
                         label="Add Message" type="text" prepend-icon="mdi-email">
@@ -100,7 +101,12 @@
     data() {
       return {
         dialog: false,
-        messageBody: ''
+        messageBody: '',
+        isValidForm: true,
+        messageRules: [
+          message => !!message || 'Message is required',
+          message => message?.length < 50 || 'Message must be less than 50 characters'
+        ]
       }
     },
     apollo: {
@@ -118,6 +124,10 @@
     },
     methods: {
       handleAddPostMessage() {
+        if (!this.$refs.form.validate()) {
+          return
+        }
+
         const variables = {
           messageBody: this.messageBody,
           userId: this.user._id,
@@ -139,7 +149,7 @@
               data
             })
           }
-        })
+        }).then(() => this.$refs.form.reset())
       },
       goToPreviousPage() {
         this.$router.go(-1)
