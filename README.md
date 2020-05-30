@@ -19,3 +19,9 @@ GraphQl playground - `http://localhost:4000/`
 
 FrontEnd - `http://localhost:8080/`
 
+____
+In dev.env
+
+`MONGO_URI=`
+
+`SECRET=`
