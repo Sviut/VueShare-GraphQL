@@ -6,7 +6,7 @@
           <v-card-title>
             <h1>{{getPost.title}}</h1>
             <v-btn @click="handleToggleLike" large icon v-if="user">
-              <v-icon large color="grey">mdi-heart</v-icon>
+              <v-icon large :color="checkIfPostLiked(getPost._id) ? 'red' : 'grey'">mdi-heart</v-icon>
             </v-btn>
             <h3 class="ml-3 font-weight-thin">{{getPost.likes}} LIKES</h3>
             <v-spacer></v-spacer>
@@ -121,7 +121,7 @@
       }
     },
     computed: {
-      ...mapGetters(['user'])
+      ...mapGetters(['user', 'userFavorites'])
     },
     methods: {
       handleAddPostMessage() {
@@ -217,7 +217,16 @@
           .catch(err => console.log(err))
       },
       handleToggleLike() {
-        this.postLiked ? this.handleLikePost() : this.handleUnlikePost()
+        this.postLiked ? this.handleUnlikePost() : this.handleLikePost()
+      },
+      checkIfPostLiked(postId) {
+         if (this.userFavorites && this.userFavorites.some(fave => fave._id === postId)) {
+           this.postLiked = true
+           return true
+         } else {
+           this.postLiked = false
+           return false
+         }
       }
     }
   }
