@@ -99,8 +99,8 @@ export const ADD_POST_MESSAGE = gql`
 `
 
 export const LIKE_POST = gql`    
-    mutation ($postId: ID!, $userName: String!) {
-        likePost(postId: $postId, username: $userName) {
+    mutation ($postId: ID!, $username: String!) {
+        likePost(postId: $postId, username: $username) {
             likes
             favorites {
                 _id

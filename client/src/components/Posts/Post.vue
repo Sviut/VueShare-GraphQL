@@ -5,7 +5,7 @@
         <v-card hover>
           <v-card-title>
             <h1>{{getPost.title}}</h1>
-            <v-btn large icon v-if="user">
+            <v-btn @click="handleLikePost" large icon v-if="user">
               <v-icon large color="grey">mdi-heart</v-icon>
             </v-btn>
             <h3 class="ml-3 font-weight-thin">{{getPost.likes}} LIKES</h3>
@@ -92,7 +92,7 @@
 </template>
 
 <script>
-  import { ADD_POST_MESSAGE, GET_POST } from '../../../queries'
+  import { ADD_POST_MESSAGE, GET_POST, LIKE_POST } from '../../../queries'
   import { mapGetters } from 'vuex'
 
   export default {
@@ -159,6 +159,34 @@
           this.dialog = !this.dialog
         }
       },
+      handleLikePost() {
+        const variables = {
+          postId: this.postId,
+          username: this.user.username
+        }
+
+        this.$apollo.mutate({
+          mutation: LIKE_POST,
+          variables,
+          update: (cache, { data: { likePost } }) => {
+            const data = cache.readQuery({
+              query: GET_POST,
+              variables: { postId: this.postId }
+            })
+            data.getPost.likes += 1
+            cache.writeQuery({
+              query: GET_POST,
+              variables: { postId: this.postId },
+              data
+            })
+          }
+        })
+        .then(({data})=> {
+          const updatedUser = {...this.user, favorites: data.likePost.favorites}
+          this.$store.commit('setUser', updatedUser)
+        })
+        .catch(err => console.log(err))
+      }
     }
   }
 </script>
