@@ -52,7 +52,6 @@ export default new Vuex.Store({
             __typename: 'Mutation',
             addPost: {
               __typename: 'Post',
-              _id: -1,
               ...payload
             }
           }

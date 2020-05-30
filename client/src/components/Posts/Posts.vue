@@ -1,7 +1,7 @@
 <template>
   <v-container fluid>
     <v-row dense  v-if="infiniteScrollPosts">
-      <v-col md="3" xs12 sm6 v-for="post in infiniteScrollPosts.posts" :key="post._id">
+      <v-col md="3" xs12 sm6 v-for="post in infiniteScrollPosts.posts" :key="post._id" @click="goToPost(post._id)">
         <v-card hover>
           <v-img :src="post.imageUrl" height="30vh" lazy-src=""/>
 
@@ -96,6 +96,9 @@
             }
           }
         })
+      },
+      goToPost(postId) {
+        this.$router.push(`/posts/${postId}`)
       }
     },
   }
