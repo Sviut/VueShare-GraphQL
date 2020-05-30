@@ -1,9 +1,9 @@
 <template>
   <v-container fluid>
-    <v-row v-if="infiniteScrollPosts">
-      <v-col class="mx-auto xs12 sm6" v-for="post in infiniteScrollPosts.posts" :key="post._id">
-        <v-card hover max-width="300">
-          <v-img :src="post.imageUrl" height="30vh"lazy-src="" />
+    <v-row dense  v-if="infiniteScrollPosts">
+      <v-col md="3" xs12 sm6 v-for="post in infiniteScrollPosts.posts" :key="post._id">
+        <v-card hover>
+          <v-img :src="post.imageUrl" height="30vh" lazy-src=""/>
 
           <v-card-actions>
             <v-card-title>
@@ -38,13 +38,22 @@
         </v-card>
       </v-col>
     </v-row>
+
+    <v-layout column v-if="showMoreEnabled">
+      <v-flex xs12>
+        <v-layout justify-center row>
+          <v-btn class="info" @click="showMorePosts">Load More</v-btn>
+        </v-layout>
+      </v-flex>
+    </v-layout>
+
   </v-container>
 </template>
 
 <script>
   import { INFINITE_SCROLL_POSTS } from '../../../queries'
 
-  const pageSize = 5
+  const pageSize = 2
 
   export default {
     name: 'Posts',
@@ -66,25 +75,22 @@
     },
     methods: {
       showMorePosts() {
-        this.pageNum += 1
+        this.pageNum++
         this.$apollo.queries.infiniteScrollPosts.fetchMore({
           variables: {
+            pageSize,
             pageNum: this.pageNum,
-            pageSize
           },
           updateQuery: (prevResult, { fetchMoreResult }) => {
+
             const newPosts = fetchMoreResult.infiniteScrollPosts.posts
             const hasMore = fetchMoreResult.infiniteScrollPosts.hasMore
 
             this.showMoreEnabled = hasMore
-
             return {
               infiniteScrollPosts: {
-                __typeName: prevResult.infiniteScrollPosts.__typeName,
-                posts: [
-                  ...prevResult.infiniteScrollPosts.posts,
-                  ...newPosts
-                ],
+                __typename: prevResult.infiniteScrollPosts.__typename,
+                posts: [...newPosts, ...prevResult.infiniteScrollPosts.posts],
                 hasMore
               }
             }

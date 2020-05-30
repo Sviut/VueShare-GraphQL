@@ -12,6 +12,7 @@ export const GET_POSTS = gql`
 export const GET_CURRENT_USER = gql`
     query {
         getCurrentUser {
+            __typename
             _id
             username
             email
@@ -28,28 +29,28 @@ export const GET_CURRENT_USER = gql`
 `
 
 export const INFINITE_SCROLL_POSTS = gql`
-query ($pageNum: Int!, $pageSize: Int!) {
-    infiniteScrollPosts(pageNum: $pageNum, pageSize: $pageSize) {
-        hasMore
-        posts {
-            _id
-            title
-            imageUrl
-            description
-            categories
-            likes
-            createdDate
-            messages {
+    query ($pageNum: Int!, $pageSize: Int!) {
+        infiniteScrollPosts(pageNum: $pageNum, pageSize: $pageSize) {
+            hasMore
+            posts {
                 _id
-            }
-            createdBy {
-                _id
-                username
-                avatar
+                title
+                imageUrl
+                description
+                categories
+                likes
+                createdDate
+                messages {
+                    _id
+                }
+                createdBy {
+                    _id
+                    username
+                    avatar
+                }
             }
         }
     }
-}
 `
 
 export const ADD_POST = gql`

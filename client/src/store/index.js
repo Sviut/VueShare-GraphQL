@@ -59,6 +59,7 @@ export default new Vuex.Store({
         })
         .then(({ data }) => {
           console.log(data.addPost)
+          router.push('/posts')
         })
         .catch(err => {
           console.error(err)
