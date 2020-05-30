@@ -1,24 +1,58 @@
 <template>
-  <v-container class="d-flex flex-column align-center" text-xs-center v-if="infiniteScrollPosts">
-    <div v-for="post in infiniteScrollPosts.posts" :key="post._id">
-      <v-img :src="post.imageUrl" height="200px" width="200px"/>
-      <h3>{{post.title}}</h3>
-    </div>
-    <v-btn @click="showMorePosts" v-if="showMoreEnabled">Load More</v-btn>
+  <v-container fluid>
+    <v-row v-if="infiniteScrollPosts">
+      <v-col class="mx-auto xs12 sm6" v-for="post in infiniteScrollPosts.posts" :key="post._id">
+        <v-card hover max-width="300">
+          <v-img :src="post.imageUrl" height="30vh"lazy-src="" />
+
+          <v-card-actions>
+            <v-card-title>
+              <div>
+                <div class="headline">{{post.title}}</div>
+                <span class="grey--text">{{post.likes}} likes - {{post.messages.length}} comments</span>
+              </div>
+            </v-card-title>
+            <v-spacer></v-spacer>
+            <v-btn icon @click="showPostCreator = !showPostCreator">
+              <v-icon>{{`mdi-arrow-${showPostCreator ? 'up' : 'down'}`}}</v-icon>
+            </v-btn>
+          </v-card-actions>
+
+          <v-slide-y-transition>
+            <v-card-text class="grey lighten-4" v-show="showPostCreator">
+              <v-list-item>
+                <v-avatar class="mr-3">
+                  <v-img :src="post.createdBy.avatar"></v-img>
+                </v-avatar>
+
+                <v-list-item-content>
+                  <v-list-item-title>
+                    {{post.createdBy.username}}
+                  </v-list-item-title>
+                  <v-list-item-subtitle>Added {{ post.createdDate}}</v-list-item-subtitle>
+                </v-list-item-content>
+
+              </v-list-item>
+            </v-card-text>
+          </v-slide-y-transition>
+        </v-card>
+      </v-col>
+    </v-row>
   </v-container>
 </template>
 
 <script>
   import { INFINITE_SCROLL_POSTS } from '../../../queries'
 
-  const pageSize = 2
+  const pageSize = 5
 
   export default {
     name: 'Posts',
     data() {
       return {
         pageNum: 1,
-        showMoreEnabled: true
+        showMoreEnabled: true,
+        showPostCreator: false
       }
     },
     apollo: {

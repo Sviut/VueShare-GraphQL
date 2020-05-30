@@ -133,7 +133,7 @@
         ]
         if (this.user) {
           items = [
-            { icon: 'mdi-chat', title: 'Chat', link: '/chat' },
+            { icon: 'mdi-chat', title: 'Posts', link: '/posts' },
           ]
         }
         return items
