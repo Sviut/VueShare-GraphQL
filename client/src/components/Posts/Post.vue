@@ -41,11 +41,13 @@
     <div class="mt-3">
       <v-layout class="mb-3" v-if="user">
         <v-flex xs12>
-          <v-form>
+          <v-form @submit.prevent="handleAddPostMessage">
             <v-layout row>
               <v-flex xs12>
-                <v-text-field clearable append-icon="mdi-send" label="Add Message" type="text" prepend-icon="mdi-email">
-
+                <v-text-field
+                        @click:append-outer="handleAddPostMessage"
+                        v-model="messageBody" clearable :append-outer-icon="messageBody && 'mdi-send'"
+                        label="Add Message" type="text" prepend-icon="mdi-email">
                 </v-text-field>
               </v-flex>
             </v-layout>
@@ -58,27 +60,29 @@
           <v-list subheader two-line>
             <v-subheader>Messages ({{getPost.messages.length}})</v-subheader>
 
-            <template v-for="message in getPost.messages">
+            <v-list-item v-for="message in getPost.messages">
 
-              <v-divider :key="message._id"></v-divider>
               <v-list-item-avatar>
                 <v-img :src="message.messageUser.avatar"></v-img>
               </v-list-item-avatar>
 
-              <v-list-item-title>
-                {{message.messageBody}}
-              </v-list-item-title>
+              <v-list-item-content>
+                <v-list-item-title>
+                  {{message.messageBody}}
+                </v-list-item-title>
 
-              <v-list-item-subtitle>
-                {{message.messageUser.username}}
-                <span class="grey--text text--lighten-1 hidden-xs-only">{{message.messageDate}}</span>
-              </v-list-item-subtitle>
+                <v-list-item-subtitle>
+                  {{message.messageUser.username}}
+                  <span class="grey--text text--lighten-1 hidden-xs-only">{{message.messageDate}}</span>
+                </v-list-item-subtitle>
+                <v-divider :key="message._id"></v-divider>
+              </v-list-item-content>
 
               <v-list-item-action class="hidden-xs-only">
-                <v-icon color="grey">mdi-bubble</v-icon>
+                <v-icon color="grey">mdi-comment</v-icon>
               </v-list-item-action>
 
-            </template>
+            </v-list-item>
           </v-list>
         </v-flex>
       </v-layout>
@@ -87,7 +91,7 @@
 </template>
 
 <script>
-  import { GET_POST } from '../../../queries'
+  import { ADD_POST_MESSAGE, GET_POST } from '../../../queries'
   import { mapGetters } from 'vuex'
 
   export default {
@@ -95,7 +99,8 @@
     props: ['postId'],
     data() {
       return {
-        dialog: false
+        dialog: false,
+        messageBody: ''
       }
     },
     apollo: {
@@ -112,6 +117,30 @@
       ...mapGetters(['user'])
     },
     methods: {
+      handleAddPostMessage() {
+        const variables = {
+          messageBody: this.messageBody,
+          userId: this.user._id,
+          postId: this.postId
+        }
+
+        this.$apollo.mutate({
+          mutation: ADD_POST_MESSAGE,
+          variables,
+          update: (cache, { data: { addPostMessage } }) => {
+            const data = cache.readQuery({
+              query: GET_POST,
+              variables: { postId: this.postId }
+            })
+            data.getPost.messages.unshift(addPostMessage)
+            cache.writeQuery({
+              query: GET_POST,
+              variables: { postId: this.postId },
+              data
+            })
+          }
+        })
+      },
       goToPreviousPage() {
         this.$router.go(-1)
       },
@@ -119,7 +148,7 @@
         if (window.innerWidth > 500) {
           this.dialog = !this.dialog
         }
-      }
+      },
     }
   }
 </script>

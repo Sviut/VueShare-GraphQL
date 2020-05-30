@@ -28,6 +28,7 @@ export const GET_POST = gql`
                 messageUser {
                     _id
                     username
+                    avatar
                 }
             }
         }
@@ -80,7 +81,11 @@ export const INFINITE_SCROLL_POSTS = gql`
 
 export const ADD_POST_MESSAGE = gql`
     mutation ($messageBody: String!, , $userId: ID!, $postId: ID!) {
-        addPostMessage(messageBody: $messageBody, userId: $userId, postId: $postId) {
+        addPostMessage(
+            messageBody: $messageBody,
+            userId: $userId,
+            postId: $postId
+        ) {
             _id
             messageBody
             messageDate

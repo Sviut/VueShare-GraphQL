@@ -32,21 +32,6 @@ module.exports = {
       })
       return post
     },
-    addPostMessage: async (_, { messageBody, userId, postId }, { Post }) => {
-      const newMessage = {
-        messageBody,
-        messageUser: userId,
-      }
-      const post = await Post.findOneAndUpdate(
-        { _id: postId },
-        { $push: { message: { $each: [newMessage], $position: 0 } } },
-        { new: true }
-      ).populate({
-        path: 'messages.messageUser',
-        model: 'User'
-      })
-      return post.messages[0]
-    },
     infiniteScrollPosts: async (_, { pageNum, pageSize }, { Post }) => {
       let posts
       if (pageNum === 1) {
@@ -70,6 +55,21 @@ module.exports = {
       return await new Post({
         title, imageUrl, categories, description, createdBy: creatorId
       }).save()
+    },
+    addPostMessage: async (_, { messageBody, userId, postId }, { Post }) => {
+      const newMessage = {
+        messageBody,
+        messageUser: userId,
+      }
+      const post = await Post.findOneAndUpdate(
+        { _id: postId },
+        { $push: { messages: { $each: [newMessage], $position: 0 } } },
+        { new: true }
+      ).populate({
+        path: 'messages.messageUser',
+        model: 'User'
+      })
+      return post.messages[0]
     },
     signInUser: async (_, { username, password }, { User }) => {
       const user = await User.findOne({ username })
