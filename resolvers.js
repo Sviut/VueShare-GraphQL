@@ -13,7 +13,7 @@ module.exports = {
         return null
       }
       const user = await User.findOne({ username: currentUser.username }).populate({
-        path: 'favorite',
+        path: 'favorites',
         model: 'Post'
       })
       return user
@@ -83,13 +83,13 @@ module.exports = {
         { $addToSet: { favorites: postId } },
         { new: true }
       ).populate({
-        path: 'favorite',
+        path: 'favorites',
         model: 'Post'
       })
 
       return { likes: post.likes, favorites: user.favorites}
     },
-    unLikePost: async (_, { username, postId }, { Post, User }) => {
+    unlikePost: async (_, { username, postId }, { Post, User }) => {
       const post = await Post.findOneAndUpdate(
         { _id: postId },
         { $inc: { likes: -1 } },
@@ -101,7 +101,7 @@ module.exports = {
         { $pull: { favorites: postId } },
         { new: true }
       ).populate({
-        path: 'favorite',
+        path: 'favorites',
         model: 'Post'
       })
 
