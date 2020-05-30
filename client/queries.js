@@ -11,7 +11,7 @@ export const GET_POSTS = gql`
     }
 `
 
-export const GET_POST = gql`    
+export const GET_POST = gql`
     query ($postId: ID) {
         getPost(postId: $postId) {
             _id
@@ -73,6 +73,21 @@ export const INFINITE_SCROLL_POSTS = gql`
                     username
                     avatar
                 }
+            }
+        }
+    }
+`
+
+export const ADD_POST_MESSAGE = gql`
+    mutation ($messageBody: String!, , $userId: ID!, $postId: ID!) {
+        addPostMessage(messageBody: $messageBody, userId: $userId, postId: $postId) {
+            _id
+            messageBody
+            messageDate
+            messageUser {
+                _id
+                avatar
+                username
             }
         }
     }

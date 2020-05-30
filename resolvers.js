@@ -26,11 +26,26 @@ module.exports = {
       return posts
     },
     getPost: async (_, { postId }, { Post }) => {
-      const post = await Post.findOne({_id: postId}).populate({
+      const post = await Post.findOne({ _id: postId }).populate({
         path: 'messages.messageUser',
         model: 'User'
       })
       return post
+    },
+    addPostMessage: async (_, { messageBody, userId, postId }, { Post }) => {
+      const newMessage = {
+        messageBody,
+        messageUser: userId,
+      }
+      const post = await Post.findOneAndUpdate(
+        { _id: postId },
+        { $push: { message: { $each: [newMessage], $position: 0 } } },
+        { new: true }
+      ).populate({
+        path: 'messages.messageUser',
+        model: 'User'
+      })
+      return post.messages[0]
     },
     infiniteScrollPosts: async (_, { pageNum, pageSize }, { Post }) => {
       let posts
