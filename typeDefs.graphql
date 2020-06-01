@@ -3,6 +3,7 @@ directive @unique on FIELD_DEFINITION
 type Query {
     getCurrentUser: User
     getPosts: [Post]
+    searchPost(searchTern: String): [Post]
     getPost(postId: ID): Post!
     infiniteScrollPosts(pageNum: Int!, pageSize: Int!): PostPage
 }

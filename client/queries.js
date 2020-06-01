@@ -35,6 +35,18 @@ export const GET_POST = gql`
     }
 `
 
+export const SEARCH_POST = gql`
+    query($searchTerm: String) {
+        searchPost(searchTern: $searchTerm) {
+            _id
+            title
+            description
+            imageUrl
+            likes
+        }
+    }
+`
+
 export const GET_CURRENT_USER = gql`
     query {
         getCurrentUser {
@@ -98,7 +110,7 @@ export const ADD_POST_MESSAGE = gql`
     }
 `
 
-export const LIKE_POST = gql`    
+export const LIKE_POST = gql`
     mutation ($postId: ID!, $username: String!) {
         likePost(postId: $postId, username: $username) {
             likes

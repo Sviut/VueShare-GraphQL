@@ -32,6 +32,18 @@ module.exports = {
       })
       return post
     },
+    searchPost: async (_, { searchTerm }, { Post }) => {
+      if (searchTerm) {
+        const searchResults = await Post.find(
+          { $text: { $search: searchTerm } },
+          { score: { $meta: 'textScore' } }
+        ).sort({
+          score: { $meta: 'textScore' },
+          likes: 'desc'
+        }).limit(5)
+        return searchResults
+      }
+    },
     infiniteScrollPosts: async (_, { pageNum, pageSize }, { Post }) => {
       let posts
       if (pageNum === 1) {
@@ -87,7 +99,7 @@ module.exports = {
         model: 'Post'
       })
 
-      return { likes: post.likes, favorites: user.favorites}
+      return { likes: post.likes, favorites: user.favorites }
     },
     unlikePost: async (_, { username, postId }, { Post, User }) => {
       const post = await Post.findOneAndUpdate(
@@ -105,7 +117,7 @@ module.exports = {
         model: 'Post'
       })
 
-      return { likes: post.likes, favorites: user.favorites}
+      return { likes: post.likes, favorites: user.favorites }
     },
     signInUser: async (_, { username, password }, { User }) => {
       const user = await User.findOne({ username })
