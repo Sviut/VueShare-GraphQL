@@ -39,7 +39,7 @@
 
       <v-spacer></v-spacer>
 
-      <v-text-field hide-details prepend-icon="mdi-magnify" placeholder="Search posts"></v-text-field>
+      <v-text-field v-model="searchTerm" @input="handleSearchPost" hide-details prepend-icon="mdi-magnify" placeholder="Search posts"></v-text-field>
 
       <v-spacer></v-spacer>
 
@@ -95,7 +95,8 @@
         sideNav: false,
         authSnackbar: false,
         authErrorSnackbar: true,
-        badgeAnimated: false
+        badgeAnimated: false,
+        searchTerm: ''
       }
     },
     watch: {
@@ -153,6 +154,11 @@
       },
       handleLogOut() {
         this.$store.dispatch('logout')
+      },
+      handleSearchPost() {
+        this.$store.dispatch('searchPost', {
+          searchTerm: this.searchTerm
+        })
       }
     }
   }

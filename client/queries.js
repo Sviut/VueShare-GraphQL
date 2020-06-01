@@ -37,7 +37,7 @@ export const GET_POST = gql`
 
 export const SEARCH_POST = gql`
     query($searchTerm: String) {
-        searchPost(searchTern: $searchTerm) {
+        searchPost(searchTerm: $searchTerm) {
             _id
             title
             description

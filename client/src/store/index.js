@@ -3,7 +3,7 @@ import Vuex from 'vuex'
 import router from '../router'
 
 import { apolloClient } from '../main'
-import { ADD_POST, GET_CURRENT_USER, GET_POSTS, SIGNIN_USER, SIGNUP_USER } from '../../queries'
+import { ADD_POST, GET_CURRENT_USER, GET_POSTS, SEARCH_POST, SIGNIN_USER, SIGNUP_USER } from '../../queries'
 
 Vue.use(Vuex)
 
@@ -35,6 +35,15 @@ export default new Vuex.Store({
     clearError: state => (state.error = null)
   },
   actions: {
+    searchPost: ({commit}, payload) => {
+      apolloClient.query({
+        query: SEARCH_POST,
+        variables: payload
+      }).then(({data}) => {
+        console.log(data.searchPost)
+      })
+        .catch(e => console.log(e))
+    },
     addPost: ({ commit }, payload) => {
       apolloClient
         .mutate({
